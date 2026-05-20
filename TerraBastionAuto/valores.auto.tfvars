@@ -1,0 +1,6 @@
+region = "us-east-1a"
+profile = "default"
+instance_type_input = "t3.micro"
+ami_input = "ami-0236922087fa98b6e"
+key_name_input = "vockey"
+instance_name_input = "Instancia-Automatizada"
