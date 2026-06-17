@@ -44,3 +44,28 @@ Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb).
 | [recommendationservice](./src/recommendationservice) | Python        | Recommends other products based on what's given in the cart.                                                                      |
 | [adservice](./src/adservice)                         | Java          | Provides text ads based on given context words.                                                                                   |
 | [loadgenerator](./src/loadgenerator)                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
+
+## Deploy on AWS (EKS)
+
+This repository now includes an AWS-oriented Kubernetes orchestrator in:
+
+`/home/runner/work/ISC-Obligatorio/ISC-Obligatorio/Microservicios-main/deployment/aws`
+
+It provides:
+
+- A dedicated namespace (`boutique`)
+- A single Kustomize entrypoint for all microservices
+- Production image tags for all services
+- AWS Network Load Balancer annotations for `frontend-external`
+
+Apply it with:
+
+```bash
+kubectl apply -k /home/runner/work/ISC-Obligatorio/ISC-Obligatorio/Microservicios-main/deployment/aws
+```
+
+Then get the external endpoint:
+
+```bash
+kubectl -n boutique get svc frontend-external
+```
