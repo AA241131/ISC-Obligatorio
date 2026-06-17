@@ -61,7 +61,7 @@ It provides:
 Apply it with:
 
 ```bash
-kubectl apply -k /home/runner/work/ISC-Obligatorio/ISC-Obligatorio/Microservicios-main/deployment/aws
+kustomize build --load-restrictor=LoadRestrictionsNone /home/runner/work/ISC-Obligatorio/ISC-Obligatorio/Microservicios-main/deployment/aws | kubectl apply -f -
 ```
 
 Then get the external endpoint:
