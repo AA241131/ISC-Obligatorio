@@ -19,3 +19,4 @@ RUN if [ -f /var/www/html/htaccess ]; then mv /var/www/html/htaccess /var/www/ht
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
+~              
