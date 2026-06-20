@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 
 # GD para cargar imagenes de productos
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype
-RUN docker-php-ext-install gd pdo pdo_mysql
+RUN docker-php-ext-install gd mysqli pdo pdo_mysql
 
 # Copiar código de la app
 COPY . /var/www/html/
