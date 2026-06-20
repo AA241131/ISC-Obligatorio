@@ -1,6 +1,6 @@
 <?php
 
-$host = 'db-obligatorio.cfanplfpi7x9.us-east-1.rds.amazonaws.com';
+$host = '172.17.0.3';
 $name = 'ecommerce';
 $user = 'admin';
 $password = 'admin1234';
