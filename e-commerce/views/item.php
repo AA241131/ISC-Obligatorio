@@ -1,6 +1,16 @@
 <?php
 
-session_start();
+require __DIR__ . '/header.php';
+require __DIR__ . '/../csrf.php';
+require __DIR__ . '/db.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
 
 if(!isset($_GET['id'])) {
     header('Location: /404');
@@ -28,14 +38,16 @@ foreach($_SESSION['cart'] as $item) {
 	}
 }
 
-require __DIR__ . '/header.php';
-require __DIR__ . '/db.php';
-require __DIR__ . '/../csrf.php';
-
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $statement = $pdo->prepare("SELECT * FROM products WHERE id=?");
 $statement->execute(array($id));
 $item = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if (count($item) === 0) {
+    header('Location: /404');
+    exit;
+}
+
 $images = unserialize($item[0]['images']);
 
 $statement = $pdo->prepare("SELECT * FROM products WHERE category=? ORDER BY rand() LIMIT 4");
