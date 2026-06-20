@@ -4,7 +4,7 @@ require __DIR__ . '/header.php';
 require __DIR__ . '/../csrf.php';
 require __DIR__ . '/db.php';
 
-$products;
+$products = [];
 $searchEmpty = false;
 $page = 1;
 $results_per_page = 10;

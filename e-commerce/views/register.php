@@ -26,7 +26,6 @@ if(isset($_POST['register']) && CSRF::validateToken($_POST['token'])) {
   } else {
     $statement = $pdo->prepare("INSERT INTO users (firstname, lastname, email, phone, address, password, created) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $statement->execute(array($firstname, $lastname, $email, $phone, $address, $password, $createdTime));
-    session_start();
     $_SESSION['name'] = $lastname . ' ' . $firstname;
     $_SESSION['email'] = $email;
     $_SESSION['phone'] = $phone;

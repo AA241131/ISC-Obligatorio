@@ -6,7 +6,16 @@ RUN a2enmod rewrite
 # Permitir uso de .htaccess (AllowOverride All)
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-RUN docker-php-ext-install pdo pdo_mysql
+# Dependencias para GD
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libfreetype6-dev
+
+# GD para cargar imagenes de productos
+RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+RUN docker-php-ext-install gd pdo pdo_mysql
 
 # Copiar código de la app
 COPY . /var/www/html/
