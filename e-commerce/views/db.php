@@ -1,9 +1,9 @@
 <?php
 
-$host = '172.17.0.3';
-$name = 'ecommerce';
-$user = 'admin';
-$password = 'admin1234';
+$host = getenv('DB_HOST');
+$name = getenv('DB_NAME');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASSWORD');
 
 try {
 	$pdo = new PDO("mysql:host=$host;dbname=$name", $user, $password);
