@@ -8,7 +8,7 @@ resource "aws_vpc" "VPC_OBG" {
 resource "aws_subnet" "VPC_subnet" {
   vpc_id     = aws_vpc.VPC_OBG.id
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0)
-
+  availability_zone = "us-east-1a"
   tags = {
     Name = "VPC_subnet"
   }
