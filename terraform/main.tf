@@ -3,6 +3,10 @@
     vpc_cidr_block = var.vpc_cidr_block
 }
 
+module "sec-module" {
+    source = "./modules/sec-module"
+}
+
 module "ec2-module" {
     source = "./modules/ec2-module"
     ami = var.ami_input
@@ -10,6 +14,11 @@ module "ec2-module" {
     key_name = var.key_name_input
     name_instance = var.instance_name_input
     subnet_id_input = module.vpc-module.subnet_id
-    sg_id_input = module.vpc-module.sg_id
+    sg_id_input = module.sec-module.sg_id
 }
 
+module "rds-module" {
+    source = "./modules/rds-module"
+    subnet_id_input = module.vpc-module.subnet2_id
+    sg_id_input = module.sec-module.sg_mysql_id
+}
