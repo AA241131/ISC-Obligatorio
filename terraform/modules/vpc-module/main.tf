@@ -62,3 +62,7 @@ output "subnet2_id" {
   value = aws_subnet.VPC_subnet2.id
 }
 
+output "vpc_cidr_block" {
+  value = aws_vpc.VPC_OBG.cidr_block
+}
+

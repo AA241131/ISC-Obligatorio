@@ -1,3 +1,12 @@
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name       = "rds-subnet-group"
+  subnet_ids = [var.subnet_id_input, var.subnet2_id_input]
+
+  tags = {
+    Name = "RDS subnet group"
+  }
+}
+
 resource "aws_db_instance" "APPBD" {
   allocated_storage    = 50
   db_name              = "mydb"
@@ -10,7 +19,10 @@ resource "aws_db_instance" "APPBD" {
   parameter_group_name = "default.mysql8.0"
   publicly_accessible    = false
   skip_final_snapshot  = true
-  vpc_security_group_ids = [var.sg_id_input]
-  db_subnet_group_name = [var.subnet_id_input]
+  multi_az              = true
+  vpc_security_group_ids = var.sg_id_input
+  db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
 }
+
+
 

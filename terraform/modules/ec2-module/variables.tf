@@ -23,7 +23,7 @@ variable "subnet_id_input" {
 
 variable "sg_id_input" {
   description = "Security Group ID for the EC2 instance"
-  type        = string
+  type = list(string)
 }
 
 output "dns" {

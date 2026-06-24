@@ -1,9 +1,14 @@
 variable subnet_id_input {
-  description = "The ID of the subnet where the RDS instance will be created"
+  description = "The ID of the first subnet where the RDS instance will be created"
   type        = string
 }
 
-variable sg_id_input {
-  description = "The ID of the security group to associate with the RDS instance"
+variable subnet2_id_input {
+  description = "The ID of the second subnet for RDS multi-AZ"
   type        = string
+}
+
+variable "sg_id_input" {
+  description = "The ID of the security group to associate with the RDS instance"
+  type = list(string)
 }

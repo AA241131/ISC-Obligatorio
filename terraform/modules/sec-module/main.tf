@@ -1,7 +1,7 @@
 resource "aws_security_group" "Allow_SSH" {
   name        = "Allow_SSH"
   description = "Allow SSH inbound traffic"
-  vpc_id      = aws_vpc.VPC_OBG.id
+  vpc_id      = var.vpc_id_input
 
   ingress {
     description      = "SSH from anywhere"
@@ -26,7 +26,7 @@ resource "aws_security_group" "Allow_SSH" {
 resource "aws_security_group" "Allow_HTTP" {
   name        = "Allow_HTTP"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = aws_vpc.VPC_OBG.id
+  vpc_id      = var.vpc_id_input
 
   ingress {
     description      = "HTTP from anywhere"
@@ -51,14 +51,14 @@ resource "aws_security_group" "Allow_HTTP" {
 resource "aws_security_group" "Allow_MySQL" {
   name        = "Allow_MySQL"
   description = "Allow MySQL inbound traffic"
-  vpc_id      = aws_vpc.VPC_OBG.id
+  vpc_id      = var.vpc_id_input
 
   ingress {
     description      = "MySQL from Subnets"
     from_port        = 3306
     to_port          = 3306
     protocol         = "tcp"
-    cidr_blocks = [cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0), cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 1)]
+    cidr_blocks = [cidrsubnet(var.vpc_cidr_block, 8, 0), cidrsubnet(var.vpc_cidr_block, 8, 1)]
   }
 
   egress {
@@ -73,7 +73,6 @@ resource "aws_security_group" "Allow_MySQL" {
   }
 }
 
-
 output "sg_http_id" {
   value = aws_security_group.Allow_HTTP.id
 }
@@ -82,6 +81,7 @@ output "sg_mysql_id" {
   value = aws_security_group.Allow_MySQL.id
 }
 
-output "sg_id" {
+output "sg_ssh_id" {
   value = aws_security_group.Allow_SSH.id
 }
+
