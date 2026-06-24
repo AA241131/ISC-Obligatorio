@@ -1,38 +1,34 @@
-variable "instance_ami" {
+variable "instance-ami" {
   description = "Ami ID"
   type = string
 }
 
-variable "instance_type" {
+variable "instance-type" {
   description = "Tipo de Instancia"
   type = string
 }
 
-variable "instance_iam_profile" {
+variable "instance-iam-profile" {
   description = "IAM Profile"
   type = string
 }
 
-variable "key_name" {
+variable "key-name" {
   description = "Key Pair Name"
   type = string
 }
 
-variable "instance_name" {
+variable "instance-name" {
   description = "Name of the EC2 instance"
   type = string
 }
 
-variable "instance_subnet" {
+variable "instance-subnet" {
   description = "Subnet ID for the EC2 instance"
   type        = string
 }
 
-variable "instance_security_groups" {
+variable "instance-security-groups" {
   description = "Security Group ID for the EC2 instance"
   type        = string
-}
-
-output "dns" {
-  value = aws_instance.module-instance-deploy.public_dns
 }

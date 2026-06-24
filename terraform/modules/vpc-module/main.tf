@@ -2,23 +2,15 @@
 
 # Crear VPC
 resource "aws_vpc" "vpc" {
-  cidr_block = var.vpc_cidr_block
+  cidr_block = var.vpc-cidr
   tags = {
-    Name = var.nombre_vpc
+    Name = var.nombre-vpc
   }
 }
 
-resource "aws_subnet" "VPC_subnet" {
-  vpc_id     = aws_vpc.VPC_OBG.id
-  cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0)
-
-  tags = {
-    Name = "VPC_subnet"
-  }
-}
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.VPC_OBG.id
+  vpc_id = aws_vpc.vpc.id
 
   tags = {
     Name = "main-igw"
@@ -26,12 +18,12 @@ resource "aws_internet_gateway" "igw" {
 }
 
 # crear la route table
-resource "aws_route_table" "route_table_publica" {
+resource "aws_route_table" "route-table-publica" {
   vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.IGW.id
+    gateway_id = aws_internet_gateway.igw.id
   }
   
   tags = {
@@ -40,9 +32,9 @@ resource "aws_route_table" "route_table_publica" {
 }
 
 # crear subnet publica
-resource "aws_subnet" "subnet_publica" {
+resource "aws_subnet" "subnet-publica" {
   vpc_id     = aws_vpc.vpc.id
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 8, 0)
+  cidr_block = var.subnet-publica-cidr
 
   tags = {
     Name = "obligatorio-isc-subnet-publica"
@@ -50,15 +42,15 @@ resource "aws_subnet" "subnet_publica" {
 }
 
 # asociar la route table publica a la subnet publica
-resource "aws_route_table_association" "public_subnet_assoc" {
-  subnet_id      = aws_subnet.Subnet_publica.id
-  route_table_id = aws_route_table.route_table_publica.id
+resource "aws_route_table_association" "public-subnet-assoc" {
+  subnet_id      = aws_subnet.subnet-publica.id
+  route_table_id = aws_route_table.route-table-publica.id
 }
 
 # crear subnet privada
-resource "aws_subnet" "Subnet_privada" {
+resource "aws_subnet" "subnet-privada" {
   vpc_id     = aws_vpc.vpc.id
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 8, 1)
+  cidr_block = var.subnet-privada-cidr
 
   tags = {
     Name = "obligatorio-isc-subnet-privada"
@@ -94,7 +86,7 @@ resource "aws_security_group" "Allow_SSH" {
 resource "aws_security_group" "Allow_HTTP" {
   name        = "Allow_HTTP"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = aws_vpc.VPC_OBG.id
+  vpc_id      = aws_vpc.vpc.id
 
   ingress {
     description      = "HTTP from anywhere"
@@ -119,14 +111,14 @@ resource "aws_security_group" "Allow_HTTP" {
 resource "aws_security_group" "Allow_MySQL" {
   name        = "Allow_MySQL"
   description = "Allow MySQL inbound traffic"
-  vpc_id      = aws_vpc.VPC_OBG.id
+  vpc_id      = aws_vpc.vpc.id
 
   ingress {
     description      = "MySQL from Subnets"
     from_port        = 3306
     to_port          = 3306
     protocol         = "tcp"
-    cidr_blocks = [cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0), cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 1)]
+    cidr_blocks = [cidrsubnet(aws_vpc.vpc.id, 8, 0), cidrsubnet(aws_vpc.vpc.id, 8, 1)]
   }
 
   egress {
@@ -196,8 +188,8 @@ resource "aws_vpc_security_group_egress_rule" "egreso-igw" {
 }
 
 #crear regla en ingreso lb
-resource "aws_vpc_security_group_ingress_rule" "ingreso-igw" {
-  security_group_id = aws_security_group.sg-igw.id
+resource "aws_vpc_security_group_ingress_rule" "ingreso-lb" {
+  security_group_id = aws_security_group.sg-lb.id
 
   cidr_ipv4   = "0.0.0.0/0"
   from_port   = 80
@@ -206,15 +198,12 @@ resource "aws_vpc_security_group_ingress_rule" "ingreso-igw" {
 }
 
 #regla de egreso de lb
-resource "aws_vpc_security_group_egress_rule" "egreso-igw" {
-  security_group_id = aws_security_group.sg-igw.id
+resource "aws_vpc_security_group_egress_rule" "egreso-lb" {
+  security_group_id = aws_security_group.sg-lb.id
 
   ip_protocol = "-1"          # todos los protocolos
   cidr_ipv4   = "0.0.0.0/0"   
 }
-
-
-
 
 #crear el load balancer
 resource "aws_lb" "lb" {
@@ -222,7 +211,7 @@ resource "aws_lb" "lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg-lb.id]
-  subnets            = aws_subnet.Subnet_publica.id
+  subnets            = aws_subnet.subnet-publica.id
 }
 
 # crear el listener para el load balancer
@@ -270,14 +259,3 @@ resource "aws_lb_target_group_attachment" "asociacion2" {
 
 
 
-output "subnet2_id" {
-  value = aws_subnet.VPC_subnet2.id
-}
-
-output "sg_http_id" {
-  value = aws_security_group.Allow_HTTP.id
-}
-
-output "sg_mysql_id" {
-  value = aws_security_group.Allow_MySQL.id
-}
