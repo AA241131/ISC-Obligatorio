@@ -25,3 +25,7 @@ module "rds-module" {
     subnet2_id_input = module.vpc-module.subnet2_id
     sg_id_input = [module.sec-module.sg_mysql_id]
 }
+
+module "s3-module" {
+    source = "./modules/s3-module"
+}
