@@ -8,12 +8,20 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-# crear el Internet Gateway
-resource "aws_internet_gateway" "IGW" {
-  vpc_id = aws_vpc.vpc.id
+resource "aws_subnet" "VPC_subnet" {
+  vpc_id     = aws_vpc.VPC_OBG.id
+  cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0)
 
   tags = {
-    Name = "obligatorio-isc-igw"
+    Name = "VPC_subnet"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.VPC_OBG.id
+
+  tags = {
+    Name = "main-igw"
   }
 }
 
@@ -80,6 +88,56 @@ resource "aws_security_group" "Allow_SSH" {
 
   tags = {
     Name = "Allow_SSH"
+  }
+}
+
+resource "aws_security_group" "Allow_HTTP" {
+  name        = "Allow_HTTP"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = aws_vpc.VPC_OBG.id
+
+  ingress {
+    description      = "HTTP from anywhere"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Allow_HTTP"
+  }
+}
+
+resource "aws_security_group" "Allow_MySQL" {
+  name        = "Allow_MySQL"
+  description = "Allow MySQL inbound traffic"
+  vpc_id      = aws_vpc.VPC_OBG.id
+
+  ingress {
+    description      = "MySQL from Subnets"
+    from_port        = 3306
+    to_port          = 3306
+    protocol         = "tcp"
+    cidr_blocks = [cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0), cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 1)]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Allow_MySQL"
   }
 }
 
@@ -211,3 +269,15 @@ resource "aws_lb_target_group_attachment" "asociacion2" {
 
 
 
+
+output "subnet2_id" {
+  value = aws_subnet.VPC_subnet2.id
+}
+
+output "sg_http_id" {
+  value = aws_security_group.Allow_HTTP.id
+}
+
+output "sg_mysql_id" {
+  value = aws_security_group.Allow_MySQL.id
+}

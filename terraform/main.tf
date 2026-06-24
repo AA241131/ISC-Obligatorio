@@ -13,6 +13,3 @@ module "ec2-module" {
     sg_id_input = module.vpc-module.sg_id
 }
 
-output "dns-output" {
-    value = module.ec2-module.dns
-}
