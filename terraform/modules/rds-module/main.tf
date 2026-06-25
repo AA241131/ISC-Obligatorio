@@ -8,13 +8,13 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 }
 
 resource "aws_db_instance" "APPBD" {
-  allocated_storage    = 50
-  db_name              = "mydb"
+  allocated_storage    = 20
+  db_name              = "ecommerce"
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.micro"
   username             = "admin"
-  password             = "12345678910"
+  password             = "admin1234"
   port                 = 3306
   parameter_group_name = "default.mysql8.0"
   publicly_accessible    = false
