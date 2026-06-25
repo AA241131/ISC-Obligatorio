@@ -12,3 +12,8 @@ variable "user_data" {
   description = "User data para las EC2 instances"
   type        = string
 }
+
+variable "subnet_list" {
+  description = "Lista de subnets para el Auto Scaling group"
+  type        = list(string)
+}

@@ -38,7 +38,8 @@ module "autoscaling-module" {
     sg_id_input = module.sec-module.sg_instancias_id
 
     user_data = templatefile("${path.root}/user_data.sh.tpl", {
-    db_host   = module.rds.endpoint
+    db_host   = module.rds-module.rds_endpoint
     ecr_image = "$ECR_URI:ver1"
+    subnet_list = module.vpc-module.public_subnets
   })
 }
