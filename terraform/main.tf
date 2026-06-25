@@ -42,5 +42,6 @@ module "autoscaling-module" {
     db_host   = module.rds-module.rds_endpoint
     ecr_image = "$ECR_URI:ver1"    
   })
-    subnet_list = module.vpc-module.public_subnets
+    subnet_list = [module.vpc-module.subnet_publica_id]
+    target_group_arn = module.vpc-module.target_group_arn
 }

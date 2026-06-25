@@ -1,9 +1,3 @@
-resource "aws_lb_target_group" "autoscaling_target_group" {
-  name     = "target-group-obligatorio-isc"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id_input
-}
 
 /*launch configuration, obsoleto
 resource "aws_launch_configuration" "launch_template" {
@@ -51,6 +45,6 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   launch_template {
     id      = aws_launch_template.launch_template_autoscaling.id
   }
-
+  target_group_arns = [var.target_group_arn]
   vpc_zone_identifier  = var.subnet_list
 }

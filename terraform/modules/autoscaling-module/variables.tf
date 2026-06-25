@@ -17,3 +17,8 @@ variable "subnet_list" {
   description = "Lista de subnets para el Auto Scaling group"
   type        = list(string)
 }
+
+variable "target_group_arn" {
+  description = "ARN del target group para el Auto Scaling group"
+  type        = string
+}

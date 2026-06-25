@@ -17,3 +17,7 @@ output "subnet_privada2_id" {
 output "vpc_cidr_block" {
   value = aws_vpc.VPC_OBG.cidr_block
 }
+
+output "target_group_arn" {
+  value = aws_lb_target_group.target_group.arn
+}
