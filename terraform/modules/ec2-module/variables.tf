@@ -26,6 +26,7 @@ variable "sg_id_input" {
   type = list(string)
 }
 
-output "dns" {
-  value = aws_instance.module-instance-deploy.public_dns
+variable "rds_endpoint" {
+  description = "RDS Endpoint"
+  type = string
 }

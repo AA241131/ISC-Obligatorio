@@ -19,6 +19,7 @@ module "ec2-module" {
     name_instance = var.instance_name_input
     subnet_id_input = module.vpc-module.subnet_publica_id
     sg_id_input = [module.sec-module.sg_instancias_id]
+    rds_endpoint = module.rds-module.rds_endpoint
 }
 
 module "rds-module" {

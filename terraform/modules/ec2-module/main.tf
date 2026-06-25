@@ -7,7 +7,7 @@ resource "aws_instance" "module-instance-deploy" {
     vpc_security_group_ids = var.sg_id_input
     associate_public_ip_address = true
     user_data = templatefile("${path.root}/user_data.sh.tpl", {
-    db_host   = module.rds-module.rds_endpoint
+    db_host   = var.rds_endpoint
     ecr_image = "$ECR_URI:ver1"    
   })
     tags = {
