@@ -11,13 +11,14 @@ module "sec-module" {
     vpc_cidr_block = module.vpc-module.vpc_cidr_block
 }
 
+
 module "ec2-module" {
     source = "./modules/ec2-module"
     ami = var.ami_input
     instance_type_input = var.instance_type_input
     key_name = var.key_name_input
     name_instance = var.instance_name_input
-    subnet_id_input = module.vpc-module.subnet_publica_id
+    subnet_id_input = module.vpc-module.subnet_publica1_id
     sg_id_input = [module.sec-module.sg_instancias_id]
     rds_endpoint = module.rds-module.rds_endpoint
 }
@@ -42,6 +43,6 @@ module "autoscaling-module" {
     db_host   = module.rds-module.rds_endpoint
     ecr_image = "$ECR_URI:ver1"    
   })
-    subnet_list = [module.vpc-module.subnet_publica_id]
+    subnet_list = [module.vpc-module.subnet_publica1_id, module.vpc-module.subnet_publica2_id]
     target_group_arn = module.vpc-module.target_group_arn
 }

@@ -14,9 +14,18 @@ resource "aws_subnet" "VPC_subnet_publica" {
   }
 }
 
-resource "aws_subnet" "VPC_subnet_privada1" {
+resource "aws_subnet" "VPC_subnet_publica2" {
   vpc_id     = aws_vpc.VPC_OBG.id
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 1)
+  availability_zone = "us-east-1b"
+  tags = {
+    Name = "VPC_subnet2"
+  }
+}
+
+resource "aws_subnet" "VPC_subnet_privada1" {
+  vpc_id     = aws_vpc.VPC_OBG.id
+  cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 2)
   availability_zone = "us-east-1a"
   tags = {
     Name = "VPC_subnet2"
@@ -25,7 +34,7 @@ resource "aws_subnet" "VPC_subnet_privada1" {
 
 resource "aws_subnet" "VPC_subnet_privada2" {
   vpc_id     = aws_vpc.VPC_OBG.id
-  cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 2)
+  cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 3)
   availability_zone = "us-east-1b"
   tags = {
     Name = "VPC_subnet2"
@@ -64,7 +73,7 @@ resource "aws_lb" "lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.sg_load_balancer_id]
-  subnets            = [aws_subnet.VPC_subnet_publica.id]
+  subnets            = [aws_subnet.VPC_subnet_publica1.id, aws_subnet.VPC_subnet_publica2.id]
 }
 
 # crear el listener para el load balancer

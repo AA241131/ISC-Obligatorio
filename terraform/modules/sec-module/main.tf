@@ -95,7 +95,6 @@ resource "aws_security_group" "sg-load-balancer" {
 resource "aws_vpc_security_group_ingress_rule" "ingreso-lb-instancias" {
   security_group_id = aws_security_group.sg-instancias.id
 
-  cidr_ipv4   = var.vpc_cidr_block
   referenced_security_group_id = aws_security_group.sg-load-balancer.id
   ip_protocol = "-1"
 }
@@ -104,7 +103,6 @@ resource "aws_vpc_security_group_ingress_rule" "ingreso-lb-instancias" {
 resource "aws_vpc_security_group_ingress_rule" "ingreso-db-instancias" {
   security_group_id = aws_security_group.sg-instancias.id
 
-  cidr_ipv4   = var.vpc_cidr_block
   referenced_security_group_id = aws_security_group.Allow_MySQL.id
   ip_protocol = "-1"
 }
