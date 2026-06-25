@@ -39,7 +39,7 @@ module "autoscaling-module" {
 
     user_data = templatefile("${path.root}/user_data.sh.tpl", {
     db_host   = module.rds-module.rds_endpoint
-    ecr_image = "$ECR_URI:ver1"
-    subnet_list = module.vpc-module.public_subnets
+    ecr_image = "$ECR_URI:ver1"    
   })
+    subnet_list = module.vpc-module.public_subnets
 }
