@@ -24,7 +24,5 @@ resource "aws_db_instance" "APPBD" {
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
 }
 
-output "rds_endpoint" {
-  value = aws_db_instance.APPBD.endpoint
-}
+
 

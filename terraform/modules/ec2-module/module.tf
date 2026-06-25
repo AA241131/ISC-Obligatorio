@@ -16,3 +16,4 @@ resource "aws_instance" "module-instance-deploy" {
         Name = var.name_instance
     }
 }
+
