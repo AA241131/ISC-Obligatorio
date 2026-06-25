@@ -24,3 +24,4 @@ module "ec2-module" {
     instance-subnet = module.vpc-module.subnet-publica-id
     instance-security-groups = module.vpc-module.sg-instancias-id
 }
+
