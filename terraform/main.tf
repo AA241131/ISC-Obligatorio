@@ -17,9 +17,9 @@ module "ec2-module" {
     ami = var.ami_input
     instance_type_input = var.instance_type_input
     key_name = var.key_name_input
-    name_instance = var.instance_name_input
+    name_instance = "bastion-ec2"
     subnet_id_input = module.vpc-module.subnet_publica1_id
-    sg_id_input = [module.sec-module.sg_instancias_id]
+    sg_id_input = [module.sec-module.sg_instancias_id, module.sec-module.sg_ssh_id]
     rds_endpoint = module.rds-module.rds_endpoint
 }
 
@@ -41,8 +41,16 @@ module "autoscaling-module" {
 
     user_data = templatefile("${path.root}/user_data.sh.tpl", {
     db_host   = module.rds-module.rds_endpoint
-    ecr_image = "$ECR_URI:ver1"    
+    ecr_image = "${aws_ecr_repository.repo.repository_url}:ver1"    
   })
     subnet_list = [module.vpc-module.subnet_publica1_id, module.vpc-module.subnet_publica2_id]
     target_group_arn = module.vpc-module.target_group_arn
+}
+
+resource "aws_ecr_repository" "repo" {
+  name = "ecommerce"
+}
+
+output "ecr_repository_url" {
+  value = aws_ecr_repository.repo.repository_url
 }
