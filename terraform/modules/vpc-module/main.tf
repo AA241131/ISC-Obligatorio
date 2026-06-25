@@ -10,7 +10,7 @@ resource "aws_subnet" "VPC_subnet_publica1" {
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0)
   availability_zone = "us-east-1a"
   tags = {
-    Name = "VPC_subnet1"
+    Name = "VPC_subnet_publica1"
   }
 }
 
@@ -19,7 +19,7 @@ resource "aws_subnet" "VPC_subnet_publica2" {
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 1)
   availability_zone = "us-east-1b"
   tags = {
-    Name = "VPC_subnet2"
+    Name = "VPC_subnet_publica2"
   }
 }
 
@@ -28,7 +28,7 @@ resource "aws_subnet" "VPC_subnet_privada1" {
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 2)
   availability_zone = "us-east-1a"
   tags = {
-    Name = "VPC_subnet2"
+    Name = "VPC_subnet_privada1"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_subnet" "VPC_subnet_privada2" {
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 3)
   availability_zone = "us-east-1b"
   tags = {
-    Name = "VPC_subnet2"
+    Name = "VPC_subnet_privada2"
   }
 }
 

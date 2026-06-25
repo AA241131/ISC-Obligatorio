@@ -46,3 +46,7 @@ module "autoscaling-module" {
     subnet_list = [module.vpc-module.subnet_publica1_id, module.vpc-module.subnet_publica2_id]
     target_group_arn = module.vpc-module.target_group_arn
 }
+
+data "aws_ecr_repository" "ecommerce" {
+  name = "ecommerce"
+}
