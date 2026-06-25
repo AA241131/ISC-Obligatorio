@@ -111,7 +111,7 @@ resource "aws_vpc_security_group_ingress_rule" "ingreso-db-instancias" {
 resource "aws_vpc_security_group_ingress_rule" "ingreso-lb" {
   security_group_id = aws_security_group.sg-load-balancer.id
 
-  cidr_ipv4   = var.vpc_cidr_block
+  cidr_ipv4   = "0.0.0.0/0"
   from_port   = 80
   ip_protocol = "tcp"
   to_port     = 80
