@@ -58,6 +58,46 @@ resource "aws_route_table_association" "public_subnet_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
+#crear el load balancer
+resource "aws_lb" "lb" {
+  name               = "obligatorio-isc-alb"  
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [var.sg_load_balancer_id]
+  subnets            = aws_subnet.VPC_subnet_publica.id
+}
 
+# crear el listener para el load balancer
+resource "aws_lb_listener" "ALB_listener" {
+  load_balancer_arn = aws_lb.lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+  
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
+}
+
+# crear el target group para el load balancer
+resource "aws_lb_target_group" "target_group" {
+  name     = "obligatorio-isc-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.vpc.id
+  
+  health_check {
+    path = "/"
+    port = "traffic-port" #Utiliza el puerto de tráfico del target group
+  }
+
+}
+ 
+resource "aws_lb_target_group_attachment" "asociacion1" {
+  target_group_arn = aws_lb_target_group.target_group.arn
+  target_id        = var.ec2_instance_id # Asocia la instancia EC2 al target group
+  port             = 80
+}
 
 

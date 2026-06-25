@@ -1,6 +1,8 @@
 module "vpc-module" {
     source = "./modules/vpc-module"
     vpc_cidr_block = var.vpc_cidr_block
+    sg_load_balancer_id = module.sec-module.sg_load_balancer_id
+    ec2_instance_id = module.ec2-module.instance_id
 }
 
 module "sec-module" {
@@ -16,7 +18,7 @@ module "ec2-module" {
     key_name = var.key_name_input
     name_instance = var.instance_name_input
     subnet_id_input = module.vpc-module.subnet_publica_id
-    sg_id_input = [module.sec-module.sg_ssh_id]
+    sg_id_input = [module.sec-module.sg_instancias_id]
 }
 
 module "rds-module" {
@@ -28,4 +30,15 @@ module "rds-module" {
 
 module "s3-module" {
     source = "./modules/s3-module"
+}
+
+module "autoscaling-module" {
+    source = "./modules/autoscaling-module"
+    vpc_id_input = module.vpc-module.vpc_id
+    sg_id_input = module.sec-module.sg_instancias_id
+
+    user_data = templatefile("${path.root}/user_data.sh.tpl", {
+    db_host   = module.rds.endpoint
+    ecr_image = "$ECR_URI:ver1"
+  })
 }
