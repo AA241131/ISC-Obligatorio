@@ -1,5 +1,5 @@
 resource "aws_lb_target_group" "autoscaling_target_group" {
-  name     = "target group obligatorio-isc"
+  name     = "target-group-obligatorio-isc"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id_input
@@ -20,7 +20,7 @@ resource "aws_launch_configuration" "launch_template" {
 */
 
 resource "aws_launch_template" "launch_template_autoscaling" {
-  name = "Launch template obligatorio-isc"
+  name = "Launch-template-obligatorio-isc"
 
   iam_instance_profile {
     name = "LabInstanceProfile"
@@ -42,4 +42,15 @@ resource "aws_launch_template" "launch_template_autoscaling" {
   }
 
   user_data = base64encode(var.user_data)
+}
+
+resource "aws_autoscaling_group" "autoscaling_group" {
+  min_size             = 1
+  max_size             = 3
+  desired_capacity     = 1
+  launch_template {
+    id      = aws_launch_template.launch_template_autoscaling.id
+  }
+
+  vpc_zone_identifier  = var.subnet_list
 }
