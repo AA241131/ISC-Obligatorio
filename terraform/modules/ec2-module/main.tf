@@ -1,0 +1,17 @@
+resource "aws_instance" "module-instance-deploy" {
+    instance_type = var.instance_type_input
+    key_name = var.key_name
+    ami = var.ami
+    iam_instance_profile = "LabInstanceProfile"
+    subnet_id = var.subnet_id_input
+    vpc_security_group_ids = var.sg_id_input
+    associate_public_ip_address = true
+    user_data = templatefile("${path.root}/user_data.sh.tpl", {
+    db_host   = module.rds-module.rds_endpoint
+    ecr_image = "$ECR_URI:ver1"    
+  })
+    tags = {
+        Name = var.name_instance
+    }
+}
+
