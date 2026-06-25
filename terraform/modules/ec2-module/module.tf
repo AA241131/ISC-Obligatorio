@@ -8,9 +8,14 @@ resource "aws_instance" "module-instance-deploy" {
     associate_public_ip_address = true
     user_data = <<-EOF
                 #!/bin/bash
-                yum install git -y
-                sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-                sudo yum install terraform -y
+                docker run -d 
+                --name ecommerce 
+                -p 80:80 
+                -e DB_HOST="${db_host}" 
+                -e DB_NAME="ecommerce" 
+                -e DB_USER="admin" 
+                -e DB_PASSWORD="supersecret" 
+                "$ECR_URI":ver1
                 EOF
     tags = {
         Name = var.name_instance
