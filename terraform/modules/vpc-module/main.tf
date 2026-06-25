@@ -10,7 +10,7 @@ resource "aws_subnet" "VPC_subnet_publica1" {
   cidr_block = cidrsubnet(aws_vpc.VPC_OBG.cidr_block, 8, 0)
   availability_zone = "us-east-1a"
   tags = {
-    Name = "VPC_subnet"
+    Name = "VPC_subnet1"
   }
 }
 
@@ -62,8 +62,13 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-resource "aws_route_table_association" "public_subnet_assoc" {
-  subnet_id      = aws_subnet.VPC_subnet_publica.id
+resource "aws_route_table_association" "public_subnet_assoc1" {
+  subnet_id      = aws_subnet.VPC_subnet_publica1.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_route_table_association" "public_subnet_assoc2" {
+  subnet_id      = aws_subnet.VPC_subnet_publica2.id
   route_table_id = aws_route_table.public_rt.id
 }
 
