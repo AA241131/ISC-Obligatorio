@@ -1,27 +1,31 @@
-﻿# root module
-# Llamar a los módulos de VPC y EC2, pasando las variables necesarias
-
-provider "aws" {
-region = var.region
+module "vpc-module" {
+    source = "./modules/vpc-module"
+    vpc_cidr_block = var.vpc_cidr_block
 }
 
-module "vpc-module" {
-  source = "./modules/vpc-module"
-  #variables para el modulo
-  vpc-cidr = "10.0.0.0/16"
-  nombre-vpc = "vpc-obligatorio-isc"
-  subnet-publica-cidr = "10.0.1.0/24"
-  subnet-privada-cidr = "10.0.2.0/24"
+module "sec-module" {
+    source = "./modules/sec-module"
+    vpc_id_input = module.vpc-module.vpc_id
+    vpc_cidr_block = module.vpc-module.vpc_cidr_block
 }
 
 module "ec2-module" {
     source = "./modules/ec2-module"
-    instance-ami = "ami-08f44e8eca9095668"
-    instance-type = "t3.micro"
-    instance-iam-profile = "LabInstanceProfile"
-    key-name = "vockey"
-    instance-name = "webserver1"
-    instance-subnet = module.vpc-module.subnet-publica-id
-    instance-security-groups = module.vpc-module.sg-instancias-id
+    ami = var.ami_input
+    instance_type_input = var.instance_type_input
+    key_name = var.key_name_input
+    name_instance = var.instance_name_input
+    subnet_id_input = module.vpc-module.subnet_id
+    sg_id_input = [module.sec-module.sg_ssh_id]
 }
 
+module "rds-module" {
+    source = "./modules/rds-module"
+    subnet_id_input = module.vpc-module.subnet_id
+    subnet2_id_input = module.vpc-module.subnet2_id
+    sg_id_input = [module.sec-module.sg_mysql_id]
+}
+
+module "s3-module" {
+    source = "./modules/s3-module"
+}
