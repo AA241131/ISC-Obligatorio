@@ -47,6 +47,13 @@ module "s3-module" {
     source = "./modules/s3-module"
 }
 
+module "cloudwatch-module" {
+  source = "./modules/cloudwatch-module"
+  alarm_email = var.admin_email
+  load_balancer_arn_suffix = module.vpc-module.lb_arn_suffix
+  target_group_arn_suffix = module.vpc-module.target_group_arn_suffix
+}
+
 module "autoscaling-module" {
     source = "./modules/autoscaling-module"
     vpc_id_input = module.vpc-module.vpc_id
