@@ -38,7 +38,7 @@ module "rds-module" {
     subnet_id_input = module.vpc-module.subnet_privada1_id
     subnet2_id_input = module.vpc-module.subnet_privada2_id
     sg_id_input = [module.sec-module.sg_mysql_id]
-    password = aws_secretsmanager_random_password.password.result
+    password = data.aws_secretsmanager_random_password.password.result
 }
 
 module "s3-module" {
@@ -52,7 +52,7 @@ module "autoscaling-module" {
 
     user_data = templatefile("${path.root}/user_data.launch_template.tpl", {
     db_host   = module.rds-module.rds_address
-    db_password = aws_secretsmanager_random_password.password.result
+    db_password = data.aws_secretsmanager_random_password.password.result
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
 
   })
@@ -78,7 +78,7 @@ resource "aws_secretsmanager_secret_version" "db_secret_version" {
   secret_id     = aws_secretsmanager_secret.db_secret.id
   secret_string = jsonencode({
     username = "admin"
-    password = aws_secretsmanager_random_password.password.result
+    password = data.aws_secretsmanager_random_password.password.result
   })
 }
 
