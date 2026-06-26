@@ -14,7 +14,7 @@ resource "aws_db_instance" "APPBD" {
   engine_version       = "8.0"
   instance_class       = "db.t3.micro"
   username             = "admin"
-  password             = "admin1234"
+  password             = var.password
   port                 = 3306
   parameter_group_name = "default.mysql8.0"
   publicly_accessible    = false

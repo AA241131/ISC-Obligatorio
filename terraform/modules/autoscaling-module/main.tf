@@ -39,12 +39,27 @@ resource "aws_launch_template" "launch_template_autoscaling" {
 
 resource "aws_autoscaling_group" "autoscaling_group" {
   min_size             = 1
-  max_size             = 3
-  desired_capacity     = 1
+  max_size             = 10
+  desired_capacity     = 2 #cantidad de instancias iniciales
   launch_template {
     id      = aws_launch_template.launch_template_autoscaling.id
     version = "$Latest"
   }
   target_group_arns = [var.target_group_arn]
   vpc_zone_identifier  = var.subnet_list
+}
+
+#politica para mantener el promedio de CPU en 50%
+resource "aws_autoscaling_policy" "cpu_policy" {
+  name                   = "cpu-target-tracking"
+  autoscaling_group_name = aws_autoscaling_group.autoscaling_group.name
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 50.0
+  }
 }
