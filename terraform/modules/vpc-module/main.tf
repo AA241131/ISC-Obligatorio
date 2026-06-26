@@ -12,6 +12,7 @@ resource "aws_subnet" "VPC_subnet_publica1" {
   tags = {
     Name = "VPC_subnet_publica1"
   }
+  map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "VPC_subnet_publica2" {
@@ -21,6 +22,7 @@ resource "aws_subnet" "VPC_subnet_publica2" {
   tags = {
     Name = "VPC_subnet_publica2"
   }
+  map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "VPC_subnet_privada1" {

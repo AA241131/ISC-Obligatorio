@@ -61,6 +61,7 @@ module "autoscaling-module" {
 
 resource "aws_ecr_repository" "repo" {
   name = "ecommerce"
+  force_delete = true
 }
 
 output "ecr_repository_url" {
