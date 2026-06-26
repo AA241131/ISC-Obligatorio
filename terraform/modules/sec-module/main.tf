@@ -96,15 +96,9 @@ resource "aws_vpc_security_group_ingress_rule" "ingreso-lb-instancias" {
   security_group_id = aws_security_group.sg-instancias.id
 
   referenced_security_group_id = aws_security_group.sg-load-balancer.id
-  ip_protocol = "-1"
-}
-
-#regla en ingreso desde db en instancias 
-resource "aws_vpc_security_group_ingress_rule" "ingreso-db-instancias" {
-  security_group_id = aws_security_group.sg-instancias.id
-
-  referenced_security_group_id = aws_security_group.Allow_MySQL.id
-  ip_protocol = "-1"
+  from_port   = 80
+  ip_protocol = "tcp"
+  to_port     = 80
 }
 
 #regla de ingreso desde internet al load balancer por puerto 80
@@ -130,7 +124,36 @@ resource "aws_vpc_security_group_egress_rule" "egreso-instancias" {
   security_group_id = aws_security_group.sg-instancias.id
 
   cidr_ipv4   = "0.0.0.0/0"
-  ip_protocol = "-1"
+  from_port   = 443
+  ip_protocol = "tcp"
+  to_port     = 443
+}
+
+resource "aws_vpc_security_group_egress_rule" "egreso-instancias-db" {
+  security_group_id = aws_security_group.sg-instancias.id
+
+  referenced_security_group_id = aws_security_group.Allow_MySQL.id
+  from_port   = 3306
+  ip_protocol = "tcp"
+  to_port     = 3306
+}
+
+resource "aws_vpc_security_group_egress_rule" "egreso-instancias-efs" {
+  security_group_id = aws_security_group.sg-instancias.id
+
+  referenced_security_group_id = aws_security_group.sg_efs.id
+  from_port   = 2049
+  ip_protocol = "tcp"
+  to_port     = 2049
+}
+
+resource "aws_vpc_security_group_egress_rule" "egreso-instancias-dns" {
+  security_group_id = aws_security_group.sg-instancias.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 53
+  ip_protocol = "udp"
+  to_port     = 53
 }
 
 # grupos de seguridad para el efs
@@ -147,12 +170,9 @@ resource "aws_vpc_security_group_ingress_rule" "ingreso-efs" {
   security_group_id = aws_security_group.sg_efs.id
 
   referenced_security_group_id = aws_security_group.sg-instancias.id
-  ip_protocol = "-1"
-  /*
-  from_port   = 2049
   ip_protocol = "tcp"
   to_port     = 2049
-  */
+  from_port   = 2049
 
 }
 
