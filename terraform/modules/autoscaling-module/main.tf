@@ -47,6 +47,11 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   }
   target_group_arns = [var.target_group_arn]
   vpc_zone_identifier  = var.subnet_list
+  tag {
+    key                 = "Name"
+    value               = "instancia-ec2-autoscaling-asg"
+    propagate_at_launch = true
+  }
 }
 
 #politica para mantener el promedio de CPU en 50%
