@@ -3,6 +3,10 @@ resource "aws_vpc" "VPC_OBG" {
   tags = {
     Name = "VPC_OBG"
   }
+
+  # para que se pueda ver el EFS con fqn name 
+  enable_dns_support   = true  #supuestamente era default true, pero estaba en null
+  enable_dns_hostnames = true
 }
 
 resource "aws_subnet" "VPC_subnet_publica1" {
