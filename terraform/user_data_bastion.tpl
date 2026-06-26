@@ -17,9 +17,9 @@ docker build -t php-apache:ver1 .
 
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ecr_url}
 
-docker tag php-apache:ver1  ${ecr_url}:ver1
+docker tag php-apache:ver1  ${ecr_url}
 
-docker push "${ecr_url}:ver1"
+docker push "${ecr_url}"
 
 sudo dnf install mariadb105 -y
 
