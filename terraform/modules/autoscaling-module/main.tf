@@ -43,6 +43,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   desired_capacity     = 1
   launch_template {
     id      = aws_launch_template.launch_template_autoscaling.id
+    version = "$Latest"
   }
   target_group_arns = [var.target_group_arn]
   vpc_zone_identifier  = var.subnet_list
