@@ -17,3 +17,7 @@ output "sg_load_balancer_id" {
 output "sg_instancias_id" {
   value = aws_security_group.sg-instancias.id
 }
+
+output "sg_efs_id" {
+  value = aws_security_group.sg_efs.id
+}

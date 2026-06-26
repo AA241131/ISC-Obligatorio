@@ -132,3 +132,34 @@ resource "aws_vpc_security_group_egress_rule" "egreso-instancias" {
   cidr_ipv4   = "0.0.0.0/0"
   ip_protocol = "-1"
 }
+
+# grupos de seguridad para el efs
+resource "aws_security_group" "sg_efs" {
+  name = "SG-EFS"
+  vpc_id = var.vpc_id_input
+  tags = {
+    Name      = "obligatorio-isc-sg-efs"
+  }
+}
+
+#regla en ingreso desde instancias en efs 
+resource "aws_vpc_security_group_ingress_rule" "ingreso-efs" {
+  security_group_id = aws_security_group.sg_efs.id
+
+  referenced_security_group_id = aws_security_group.sg-instancias.id
+  ip_protocol = "-1"
+  /*
+  from_port   = 2049
+  ip_protocol = "tcp"
+  to_port     = 2049
+  */
+
+}
+
+#reglas de egreso para las efs
+resource "aws_vpc_security_group_egress_rule" "egreso-efs" {
+  security_group_id = aws_security_group.sg_efs.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  ip_protocol = "-1"
+}

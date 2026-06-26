@@ -1,4 +1,8 @@
 #!/bin/bash
+dnf install -y amazon-efs-utils
+mkdir -p /mnt/uploads
+#montar efs
+mount -t efs ${efs_id}:/ /mnt/uploads
 
 yum install -y docker 
 
@@ -19,6 +23,7 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 
 docker tag php-apache:ver1  ${ecr_url}
 
+#pusheo de la imagen al ECR
 docker push "${ecr_url}"
 
 sudo dnf install mariadb105 -y

@@ -23,14 +23,16 @@ module "ec2-module" {
     depends_on = [
     aws_ecr_repository.repo
     ]
+
     user_data = templatefile("${path.root}/user_data_bastion.tpl", {
     db_host = module.rds-module.rds_address
     db_user = "admin"
     db_password = data.aws_secretsmanager_random_password.password.random_password
     db_name = "ecommerce"
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
-
+    efs_id = aws_efs_file_system.uploads.id
     })
+    
 }
 
 module "rds-module" {
@@ -54,8 +56,9 @@ module "autoscaling-module" {
     db_host   = module.rds-module.rds_address
     db_password = data.aws_secretsmanager_random_password.password.random_password
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
-
+    efs_id = aws_efs_file_system.uploads.id
   })
+
     subnet_list = [module.vpc-module.subnet_publica1_id, module.vpc-module.subnet_publica2_id]
     target_group_arn = module.vpc-module.target_group_arn
 }
@@ -84,3 +87,19 @@ resource "aws_secretsmanager_secret_version" "db_secret_version" {
   })
 }
 
+resource "aws_efs_file_system" "uploads" {
+  creation_token = "ecommerce-uploads"
+}
+
+#montar el efs en las subredes publicas
+resource "aws_efs_mount_target" "publica1" {
+  file_system_id  = aws_efs_file_system.uploads.id
+  subnet_id       = module.vpc-module.subnet_publica1_id
+  security_groups = [module.sec-module.sg_efs_id]
+}
+
+resource "aws_efs_mount_target" "publica2" {
+  file_system_id  = aws_efs_file_system.uploads.id
+  subnet_id       = module.vpc-module.subnet_publica2_id
+  security_groups = [module.sec-module.sg_efs_id]
+}
