@@ -68,6 +68,8 @@ resource "aws_ecr_repository" "repo" {
 data "aws_secretsmanager_random_password" "password" {
   password_length = 10
   exclude_numbers = true
+  exclude_punctuation = true
+  include_space = false
 }
 
 resource "aws_secretsmanager_secret" "db_secret" {
