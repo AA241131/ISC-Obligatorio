@@ -20,18 +20,17 @@ module "ec2-module" {
     name_instance = "bastion-ec2"
     subnet_id_input = module.vpc-module.subnet_publica1_id
     sg_id_input = [module.sec-module.sg_instancias_id, module.sec-module.sg_ssh_id]
-    rds_endpoint = module.rds-module.rds_endpoint
     depends_on = [
     aws_ecr_repository.repo
-  ]
+    ]
     user_data = templatefile("${path.root}/user_data_bastion.tpl", {
-    db_host = module.rds-module.rds_endpoint
+    db_host = module.rds-module.rds_address
     db_user = "admin"
     db_password = "admin1234"
     db_name = "ecommerce"
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
 
-  })
+    })
 }
 
 module "rds-module" {
@@ -51,7 +50,7 @@ module "autoscaling-module" {
     sg_id_input = module.sec-module.sg_instancias_id
 
     user_data = templatefile("${path.root}/user_data.launch_template.tpl", {
-    db_host   = module.rds-module.rds_endpoint
+    db_host   = module.rds-module.rds_address
 
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
 

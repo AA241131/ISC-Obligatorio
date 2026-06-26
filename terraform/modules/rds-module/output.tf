@@ -1,3 +1,3 @@
-output "rds_endpoint" {
-  value = aws_db_instance.APPBD.endpoint
+output "rds_address" {
+  value = aws_db_instance.APPBD.address
 }
