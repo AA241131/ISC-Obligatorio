@@ -23,8 +23,6 @@ do
     sleep 15
 done
 
-docker pull ${ecr_image}
-
 docker pull ${ecr_url}
 
 docker run -d \
