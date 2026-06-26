@@ -107,11 +107,6 @@ resource "aws_lb_target_group" "target_group" {
   }
 
 }
-/* no es necesario ya que el autoscaling group se encarga de asociar las instancias al target group 
-resource "aws_lb_target_group_attachment" "asociacion1" {
-  target_group_arn = aws_lb_target_group.target_group.arn
-  target_id        = var.ec2_instance_id # Asocia la instancia EC2 al target group
-  port             = 80
-}
-*/
+
+
 
