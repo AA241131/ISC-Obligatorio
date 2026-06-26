@@ -66,6 +66,9 @@ module "autoscaling-module" {
 resource "aws_ecr_repository" "repo" {
   name = "ecommerce"
   force_delete = true
+  tags = {
+    Name = "ecommerce-ecr"
+  }
 }
 
 data "aws_secretsmanager_random_password" "password" {
@@ -77,6 +80,9 @@ data "aws_secretsmanager_random_password" "password" {
 
 resource "aws_secretsmanager_secret" "db_secret" {
   name = "rds-ecommerce-secret"
+  tags = {
+    Name = "rds-ecommerce-secret"
+  }
 }
 
 resource "aws_secretsmanager_secret_version" "db_secret_version" {
@@ -89,6 +95,9 @@ resource "aws_secretsmanager_secret_version" "db_secret_version" {
 
 resource "aws_efs_file_system" "uploads" {
   creation_token = "ecommerce-uploads"
+  tags = {
+    Name = "ecommerce-uploads-efs"
+  }
 }
 
 #montar el efs en las subredes publicas

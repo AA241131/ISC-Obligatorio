@@ -85,6 +85,9 @@ resource "aws_lb" "lb" {
   load_balancer_type = "application"
   security_groups    = [var.sg_load_balancer_id]
   subnets            = [aws_subnet.VPC_subnet_publica1.id, aws_subnet.VPC_subnet_publica2.id]
+  tags = {
+    Name = "obligatorio-isc-alb"
+  }
 }
 
 # crear el listener para el load balancer
@@ -106,6 +109,9 @@ resource "aws_lb_target_group" "target_group" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.VPC_OBG.id
+  tags = {
+    Name = "obligatorio-isc-target-group"
+  }
   
   health_check {
     path = "/"

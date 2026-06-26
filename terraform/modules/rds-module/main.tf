@@ -19,9 +19,12 @@ resource "aws_db_instance" "APPBD" {
   parameter_group_name = "default.mysql8.0"
   publicly_accessible    = false
   skip_final_snapshot  = true
-  multi_az              = false
+  multi_az              = true
   vpc_security_group_ids = var.sg_id_input
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
+  tags = {
+    Name = "rds-ecommerce-instance"
+  }
 }
 
 
