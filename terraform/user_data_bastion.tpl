@@ -26,6 +26,8 @@ docker tag php-apache:ver1  ${ecr_url}
 #pusheo de la imagen al ECR
 docker push "${ecr_url}"
 
+echo "Imagen subida."
+
 sudo dnf install mariadb105 -y
 
 mysql \
@@ -33,3 +35,5 @@ mysql \
   -u "${db_user}" \
   -p"${db_password}" \
   "${db_name}" < /home/ec2-user/repo/ISC-Obligatorio/e-commerce/db-settings.sql
+
+echo "Base de datos configurada."

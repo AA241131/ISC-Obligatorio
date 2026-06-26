@@ -14,6 +14,17 @@ aws ecr get-login-password --region us-east-1 \
   --username AWS \
   --password-stdin ${ecr_url}
 
+#probar bajar la imagen hasta que se pueda bajar correctamente
+until aws ecr describe-images \
+    --repository-name ecommerce \
+    --image-ids imageTag=ver1 >/dev/null 2>&1
+do
+    echo "Esperando imagen..."
+    sleep 15
+done
+
+docker pull ${ecr_image}
+
 docker pull ${ecr_url}
 
 docker run -d \
@@ -25,4 +36,4 @@ docker run -d \
   -p 80:80 \
   ${ecr_url}
 
-sudo usermod -aG docker $USER
+sudo usermod -aG docker ec2-user
