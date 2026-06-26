@@ -6,10 +6,7 @@ resource "aws_instance" "module-instance-deploy" {
     subnet_id = var.subnet_id_input
     vpc_security_group_ids = var.sg_id_input
     associate_public_ip_address = true
-    user_data = templatefile("${path.root}/user_data.sh.tpl", {
-    db_host   = var.rds_endpoint
-    ecr_image = "$ECR_URI:ver1"    
-  })
+    user_data = base64encode(var.user_data)
     tags = {
         Name = var.name_instance
     }

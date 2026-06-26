@@ -30,3 +30,8 @@ variable "rds_endpoint" {
   description = "RDS Endpoint"
   type = string
 }
+
+variable "user_data" {
+  description = "User data script for the EC2 instance"
+  type        = string
+}
