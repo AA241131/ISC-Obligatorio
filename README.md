@@ -63,7 +63,7 @@ terraform apply -auto-approve
 ### Instancias
 
 La selección de la AMI se hizo ordenando por fecha de creación las Amazon Linux 2023, free tier, con un disco EBS mayor a 8 GB:
-``` shell
+``` sh
 aws ec2 describe-images \
   --region us-east-1 \
   --owners amazon \
@@ -115,7 +115,31 @@ Se implementa un módulo de CloudWatch con una SNS topic asociada a un correo de
 La resiliencia se apoya en una arquitectura con ALB, Auto Scaling Group, múltiples subnets públicas y privadas, EFS compartido y RDS Multi-AZ. La escalabilidad horizontal la maneja el Auto Scaling Group en función del uso de CPU, permitiendo aumentar o reducir instancias según la demanda sin interrumpir el servicio.
 
 
-## Credenciales de Admin en la app
+## Troubleshooting
+
+Agregamos mensajes de echo en el bastión para entender que cosas fallan. Se agregó un loop en el user_data del launchtemplate para esperar que la imagen esté pusheada por el bastión. Se despliega el mensaje "Esperando imagen..." cada 15 segundos. 
+
+Se puso al usuario ec2-user en el grupo Docker para facilidad de troubleshooting. 
+
+``` sh
+# chequear errores de inicio
+sudo -i -u ec2-user
+cat /var/log/cloud-init-output.log
+
+# errores de conectividad
+nc -zv <url de la base de datos> 3306
+
+# chequear errores dentro del container
+docker exec -it <id del container> bash
+
+# chequear errores en la base de datos
+mysql -h <fqdn de la base de datos> -u admin -p ecommerce
+
+#refresh de las instancias
+aws autoscaling start-instance-refresh --auto-scaling-group-name <nombre del asg>
+```
+
+## Credenciales para probar el portal de admin
 
 ```sh
 uri: /admin/login
