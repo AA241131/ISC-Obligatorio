@@ -58,7 +58,8 @@ module "autoscaling-module" {
     source = "./modules/autoscaling-module"
     vpc_id_input = module.vpc-module.vpc_id
     sg_id_input = module.sec-module.sg_instancias_id
-
+    ami = var.ami_input
+    instance_type = var.instance_type_input
     user_data = templatefile("${path.root}/user_data.launch_template.tpl", {
     db_host   = module.rds-module.rds_address
     db_password = data.aws_secretsmanager_random_password.password.random_password

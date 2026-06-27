@@ -1,8 +1,8 @@
 region = "us-east-1a"
 profile = "default"
 instance_type_input = "t3.micro"
-ami_input = "ami-0236922087fa98b6e"
+ami_input = "ami-08f44e8eca9095668"
 key_name_input = "vockey"
 instance_name_input = "Instancia-Automatizada"
 admin_email = "admin@example.com"
-
+vpc_cidr_block = "10.0.0.0/16"

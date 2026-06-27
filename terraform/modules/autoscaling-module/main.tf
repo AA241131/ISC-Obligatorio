@@ -20,9 +20,9 @@ resource "aws_launch_template" "launch_template_autoscaling" {
     name = "LabInstanceProfile"
   }
 
-  image_id = "ami-0236922087fa98b6e"
+  image_id = var.ami
   instance_initiated_shutdown_behavior = "terminate"
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
   key_name = "vockey"
 
   vpc_security_group_ids = [var.sg_id_input]

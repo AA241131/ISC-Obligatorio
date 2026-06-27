@@ -22,3 +22,13 @@ variable "target_group_arn" {
   description = "ARN del target group para el Auto Scaling group"
   type        = string
 }
+
+variable "ami" {
+  description = "AMI ID para las instancias EC2"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "Tipo de instancia EC2"
+  type        = string
+}

@@ -1,3 +1,5 @@
+# Modulo para creacion de instancia EC2
+
 resource "aws_instance" "module-instance-deploy" {
     instance_type = var.instance_type_input
     key_name = var.key_name
