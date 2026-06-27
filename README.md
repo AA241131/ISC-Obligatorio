@@ -146,4 +146,8 @@ uri: /admin/login
 username: admin
 password: 123456
 ```
+## Reproducir demo ASCIINEMA
 
+```sh
+asciinema play demoISCOBG.cast
+```
