@@ -45,6 +45,7 @@ if [ "$product_count" -eq 0 ]; then
     echo "La tabla products está vacía. Subiendo datos de prueba..."
     mysql -h "${db_host}" -u "${db_user}" -p"${db_password}" "${db_name}" < /home/ec2-user/repo/ISC-Obligatorio/testdata/feed.sql
     cp /home/ec2-user/repo/ISC-Obligatorio/testdata/imagenes/* /mnt/uploads/
+    chmod 777 /mnt/uploads/*
     echo "Datos de prueba subidos correctamente."
 else
     echo "La tabla products ya contiene datos. No se subirán datos de prueba."
