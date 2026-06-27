@@ -25,12 +25,20 @@ done
 
 docker pull ${ecr_url}
 
+SECRET=$(aws secretsmanager get-secret-value \
+    --secret-id ${secret_arn} \
+    --query SecretString \
+    --output text)
+
+DB_USER=$(echo "$SECRET" | jq -r '.username')
+DB_PASSWORD=$(echo "$SECRET" | jq -r '.password')
+
 docker run -d \
   -v /mnt/uploads:/var/www/html/uploads \
   -e DB_HOST=${db_host} \
   -e DB_NAME="ecommerce" \
-  -e DB_USER="admin" \
-  -e DB_PASSWORD="${db_password}" \
+  -e DB_USER="$DB_USER" \
+  -e DB_PASSWORD="$DB_PASSWORD" \
   -p 80:80 \
   ${ecr_url}
 

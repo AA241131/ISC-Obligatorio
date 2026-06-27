@@ -31,10 +31,18 @@ echo "Imagen subida."
 
 sudo dnf install mariadb105 -y
 
+SECRET=$(aws secretsmanager get-secret-value \
+    --secret-id ${secret_arn} \
+    --query SecretString \
+    --output text)
+
+DB_USER=$(echo "$SECRET" | jq -r '.username')
+DB_PASSWORD=$(echo "$SECRET" | jq -r '.password')
+
 mysql \
   -h "${db_host}" \
-  -u "${db_user}" \
-  -p"${db_password}" \
+  -u "$DB_USER" \
+  -p"$DB_PASSWORD" \
   "${db_name}" < /home/ec2-user/repo/ISC-Obligatorio/e-commerce/db-settings.sql
 
 echo "Base de datos configurada."

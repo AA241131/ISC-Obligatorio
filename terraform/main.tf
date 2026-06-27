@@ -33,8 +33,7 @@ module "ec2-module" {
 
     user_data = templatefile("${path.root}/user_data_bastion.tpl", {
     db_host = module.rds-module.rds_address
-    db_user = "admin"
-    db_password = data.aws_secretsmanager_random_password.password.random_password
+    secret_arn = module.rds-module.rds_secret_arn
     db_name = "ecommerce"
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
     efs_id = aws_efs_file_system.uploads.id
@@ -47,7 +46,7 @@ module "rds-module" {
     subnet_id_input = module.vpc-module.subnet_privada1_id
     subnet2_id_input = module.vpc-module.subnet_privada2_id
     sg_id_input = [module.sec-module.sg_mysql_id]
-    password = data.aws_secretsmanager_random_password.password.random_password
+    #password = data.aws_secretsmanager_random_password.password.random_password
 }
 
 module "s3-module" {
@@ -77,6 +76,7 @@ module "autoscaling-module" {
     instance_type = var.instance_type_input
     user_data = templatefile("${path.root}/user_data.launch_template.tpl", {
     db_host   = module.rds-module.rds_address
+    secret_arn = module.rds-module.rds_secret_arn
     db_password = data.aws_secretsmanager_random_password.password.random_password
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
     efs_id = aws_efs_file_system.uploads.id
@@ -94,6 +94,7 @@ resource "aws_ecr_repository" "repo" {
   }
 }
 
+/*
 data "aws_secretsmanager_random_password" "password" {
   password_length = 10
   exclude_numbers = true
@@ -115,6 +116,7 @@ resource "aws_secretsmanager_secret_version" "db_secret_version" {
     password = data.aws_secretsmanager_random_password.password.random_password
   })
 }
+*/
 
 resource "aws_efs_file_system" "uploads" {
   creation_token = "ecommerce-uploads"
@@ -134,4 +136,9 @@ resource "aws_efs_mount_target" "publica2" {
   file_system_id  = aws_efs_file_system.uploads.id
   subnet_id       = module.vpc-module.subnet_publica2_id
   security_groups = [module.sec-module.sg_efs_id]
+}
+
+
+locals {
+  db_credentials = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
 }

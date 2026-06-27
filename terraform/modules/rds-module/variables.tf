@@ -12,9 +12,10 @@ variable "sg_id_input" {
   description = "The ID of the security group to associate with the RDS instance"
   type = list(string)
 }
-
+/*
 variable "password" {
   description = "password para la base de datos"
   type        = string
   sensitive   = true
 }
+*/
