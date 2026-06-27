@@ -4,7 +4,7 @@ resource "aws_vpc" "VPC_OBG" {
     Name = "VPC_OBG"
   }
 
-  # para que se pueda ver el EFS con fqn name 
+  # para que se pueda ver el EFS con fqdn name 
   enable_dns_support   = true  #supuestamente era default true, pero estaba en null
   enable_dns_hostnames = true
 }

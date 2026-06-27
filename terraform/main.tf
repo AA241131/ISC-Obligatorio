@@ -1,3 +1,12 @@
+provider "aws" {
+  region = var.region
+  default_tags {
+    tags = {
+      Project     = "Obligatorio"
+    }
+  }
+}
+
 module "vpc-module" {
     source = "./modules/vpc-module"
     vpc_cidr_block = var.vpc_cidr_block
