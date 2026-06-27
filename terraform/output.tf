@@ -1,5 +1,5 @@
 output "alb_url" {
-  value = "http://${module.vpc-module.lb_dns_name}"
+  value = "http://${module.alb-module.lb_dns_name}"
 }
 
 output "ecr_repository_url" {

@@ -10,8 +10,6 @@ provider "aws" {
 module "vpc-module" {
     source = "./modules/vpc-module"
     vpc_cidr_block = var.vpc_cidr_block
-    sg_load_balancer_id = module.sec-module.sg_load_balancer_id
-    ec2_instance_id = module.ec2-module.instance_id
 }
 
 module "sec-module" {
@@ -56,11 +54,19 @@ module "s3-module" {
     source = "./modules/s3-module"
 }
 
+module "alb-module" {
+  source = "./modules/alb-module"
+  vpc_id = module.vpc-module.vpc_id
+  subnet_publica1_id = module.vpc-module.subnet_publica1_id
+  subnet_publica2_id = module.vpc-module.subnet_publica2_id
+  sg_load_balancer_id = module.sec-module.sg_load_balancer_id
+}
+
 module "cloudwatch-module" {
   source = "./modules/cloudwatch-module"
   alarm_email = var.admin_email
-  load_balancer_arn_suffix = module.vpc-module.lb_arn_suffix
-  target_group_arn_suffix = module.vpc-module.target_group_arn_suffix
+  load_balancer_arn_suffix = module.alb-module.lb_arn_suffix
+  target_group_arn_suffix = module.alb-module.target_group_arn_suffix
 }
 
 module "autoscaling-module" {
@@ -77,7 +83,7 @@ module "autoscaling-module" {
   })
 
     subnet_list = [module.vpc-module.subnet_publica1_id, module.vpc-module.subnet_publica2_id]
-    target_group_arn = module.vpc-module.target_group_arn
+    target_group_arn = module.alb-module.target_group_arn
 }
 
 resource "aws_ecr_repository" "repo" {
