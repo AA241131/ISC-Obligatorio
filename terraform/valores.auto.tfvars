@@ -1,4 +1,4 @@
-region = "us-east-1a"
+region = "us-east-1"
 profile = "default"
 instance_type_input = "t3.micro"
 ami_input = "ami-08f44e8eca9095668"
