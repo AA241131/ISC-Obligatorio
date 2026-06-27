@@ -39,7 +39,7 @@ terraform apply -auto-approve
 ## Estructura del repositorio
 ``` shell 
 └── ISC-Obligatorio
-    ├── e-commerce                            # applicacion
+    ├── e-commerce                            # applicación PHP
     ├── README.md                             # este archivo
     └── terraform                             # directorio de terraform
         ├── main.tf                           # root main
@@ -48,7 +48,8 @@ terraform apply -auto-approve
         │   ├── ec2-module                    # módulo de instancias ec2
         │   ├── rds-module                    # módulo de base de datos
         │   ├── s3-module                     # módulo de bucket s3
-        │   ├── sec-module                    # módulo de SG
+        │   ├── alb-module                    # módulo de Load Balancer
+        │   ├── sec-module                    # módulo de Security Groups
         │   └── vpc-module                    # módulo de red
         ├── output.tf                         # salidas del root
         ├── user_data_bastion.tpl             # user data para el bastión
@@ -83,23 +84,35 @@ Las EC2 del launch template tendrán un user_data para montar el EFS, bajar la i
 El Auto Scaling Group está definido con un mínimo de 1 instancia, máximo 10, y deseable 2. Creará instancias EC2 en 2 subnets públicas basándose en el launch template, siguiendo una auto scaling policy definida para escalar por uso de CPU. 
 
 El EFS tiene anclajes en 2 redes públicas y tiene permiso de escritura y lectura para que las servidores web puedan acceder
-### Red
+### Diagrama de Red e Infraestructura:
 
-![Diagrama](_doc/Red.png)
+![Diagrama](_doc/DiagramaInfraAWS.png)
 
-Trabajamos en la región us-east-1, definiendo el CIDR 10.0.0.0/16 para el VPC, 2 subredes públicas en us-east-1a y us-east-1b, y 2 subredes privadas en us-east-1a y us-east-1b. 
+Trabajamos en la región us-east-1, definiendo el bloque de red CIDR 10.0.0.0/16 para el VPC, 2 subredes públicas en us-east-1a y us-east-1b, y 2 subredes privadas en us-east-1a y us-east-1b. 
 
-La entrada a las EC2 del autoscaling group es a través de un load balancer de aplicaciones, y tenemos un internet gateway para conectividad con internet. Las subnets públicas tienen asociada una tabla de ruta con una default gatway apuntando al igw. El VPC a su vez tiene activada la resolución de nombres para permitir que el EFS sea encontrado por las instancias por su nombre fqdn. 
+La entrada a las EC2 del autoscaling group es a través de un application load balancer de aplicaciones, y tenemos un internet gateway para conectividad hacia internet. Las subnets públicas tienen asociada una tabla de ruta con una default gatway apuntando al igw. El VPC a su vez tiene activada la resolución de nombres para permitir que el EFS sea encontrado por las instancias por su nombre fqdn. 
 
 ### Base de datos
 
-La base de datos es multi az, estando en us-east-1a y us-east-1b ya que está en las subnets privadas asociadas con estas availability zones. 
+Se configura la base de datos con motor MySQL en modo "multi az", estando en us-east-1a y us-east-1b dado que las subnets privadas asociadas estan en las mencionadas availability zones haciendose Snapshots periodicas para tener backups en caso de desastre.
 
-### Seguridad
-Grupos de seguridad
+### 🔒Seguridad
+Se implementan los siguientes Grupos de Seguridad:
+1. Allow_SSH > Permite unicamente tráfico SSH saliente-entrante
+2. Allow_HTTP > Permite unicamente tráfico HTTP saliente-entrante
+3. Allow_MYSQL > Permite el tráfico desde VPC Obligatorio unicamente al puerto 3306
+4. sg-instancias > Protege las instancias EC2 de la aplicación; permite entrada desde el ALB y salida solo para el funcionamiento de la app, la base de datos, EFS y acceso a AWS.
+5. sg-load-balancer > Protege el ALB; acepta tráfico HTTP desde Internet y reenvía las solicitudes hacia las instancias del auto scaling group.
+6. sg_efs > Protege el sistema de archivos EFS; permite acceso NFS solo desde las instancias autorizadas.
+
 Secrets
+Se utiliza AWS Secrets Manager para guardar la contraseña de la base de datos y mantenerla fuera del código fuente. El valor se genera en Terraform y luego se usa tanto en la instancia de bastión como en las instancias del auto scaling group mediante variables de entorno.
+
 ### Monitoreo por Cloud Watch
+Se implementa un módulo de CloudWatch con una SNS topic asociada a un correo de administración. El monitoreo se enfoca en alertar solo ante problemas graves del ALB y sus workers, como errores 5xx y hosts no saludables, para evitar notificaciones innecesarias.
+
 ### Resiliencia y escalabilidad
+La resiliencia se apoya en una arquitectura con ALB, Auto Scaling Group, múltiples subnets públicas y privadas, EFS compartido y RDS Multi-AZ. La escalabilidad horizontal la maneja el Auto Scaling Group en función del uso de CPU, permitiendo aumentar o reducir instancias según la demanda sin interrumpir el servicio.
 
 
 ## Credenciales de Admin en la app
