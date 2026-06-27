@@ -77,7 +77,7 @@ module "autoscaling-module" {
     user_data = templatefile("${path.root}/user_data.launch_template.tpl", {
     db_host   = module.rds-module.rds_address
     secret_arn = module.rds-module.rds_secret_arn
-    db_password = data.aws_secretsmanager_random_password.password.random_password
+    #db_password = data.aws_secretsmanager_random_password.password.random_password
     ecr_url = "${aws_ecr_repository.repo.repository_url}:ver1"
     efs_id = aws_efs_file_system.uploads.id
   })
@@ -138,7 +138,8 @@ resource "aws_efs_mount_target" "publica2" {
   security_groups = [module.sec-module.sg_efs_id]
 }
 
-
+/*
 locals {
   db_credentials = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
 }
+*/
