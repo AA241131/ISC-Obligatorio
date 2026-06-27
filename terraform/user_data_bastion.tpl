@@ -48,10 +48,10 @@ mysql \
 echo "Base de datos configurada."
 
 #testear que la tabla products este vacía y subir datos de prueba si es así
-product_count=$(mysql -h "${db_host}" -u "${db_user}" -p"${db_password}" -D "${db_name}" -se "SELECT COUNT(*) FROM products;")
+product_count=$(mysql -h "${db_host}" -u "$DB_USER" -p"$DB_PASSWORD" -D "${db_name}" -se "SELECT COUNT(*) FROM products;")
 if [ "$product_count" -eq 0 ]; then
     echo "La tabla products está vacía. Subiendo datos de prueba..."
-    mysql -h "${db_host}" -u "${db_user}" -p"${db_password}" "${db_name}" < /home/ec2-user/repo/ISC-Obligatorio/testdata/feed.sql
+    mysql -h "${db_host}" -u "$DB_USER" -p"$DB_PASSWORD" "${db_name}" < /home/ec2-user/repo/ISC-Obligatorio/testdata/feed.sql
     cp /home/ec2-user/repo/ISC-Obligatorio/testdata/imagenes/* /mnt/uploads/
     chmod 777 /mnt/uploads/*
     echo "Datos de prueba subidos correctamente."
