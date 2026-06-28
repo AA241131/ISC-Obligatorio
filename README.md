@@ -39,16 +39,19 @@ terraform apply -auto-approve
 ## Estructura del repositorio
 ``` shell 
 └── ISC-Obligatorio
+    ├── testdata                              # directorio de datos
+    │   ├── feed.sql                          # tabla de productos de prueba
+    │   └── imagenes                          # directorio de imagenes de productos
     ├── e-commerce                            # applicación PHP
     ├── README.md                             # este archivo
     └── terraform                             # directorio de terraform
         ├── main.tf                           # root main
         ├── modules                           # directorio de módulos
+        │   ├── alb-module                    # módulo de Load Balancer
         │   ├── autoscaling-module            # módulo de ASG
         │   ├── ec2-module                    # módulo de instancias ec2
         │   ├── rds-module                    # módulo de base de datos
-        │   ├── s3-module                     # módulo de bucket s3
-        │   ├── alb-module                    # módulo de Load Balancer
+        │   ├── s3-module                     # módulo de bucket s3
         │   ├── sec-module                    # módulo de Security Groups
         │   └── vpc-module                    # módulo de red
         ├── output.tf                         # salidas del root
@@ -56,7 +59,7 @@ terraform apply -auto-approve
         ├── user_data.launch_template.tpl     # user data para app servers
         ├── valores.auto.tfvars               # valores por defecto
         └── variables.tf                      # valores parametrizados
-
+ 
 ```
 ## Arquitectura
 
@@ -148,6 +151,4 @@ password: 123456
 ```
 ## Reproducir demo ASCIINEMA
 
-```sh
-asciinema play demoISCOBG.cast
-```
+[![Terminal Demo](https://asciinema.org/a/HA6Fej8TsmBsHKnE.svg?sanitize=true)](https://asciinema.org/a/HA6Fej8TsmBsHKnE)
